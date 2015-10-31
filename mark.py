@@ -51,13 +51,6 @@ else:
     print("Usage: %s {digest|filelist digest [minlength]}"%sys.argv[0])
     sys.exit(1)
 
-def bsearch(a, v, lo, hi):
-    mid = (lo+hi)//2
-    if hi == lo or a[mid][1] == v: return mid
-    if hi - lo == 1:
-        return lo if a[lo][1] < v else hi
-    return bsearch(a, v, lo if v<a[mid][1] else mid+1, mid-1 if v<a[mid][1] else hi)
-
 def nbsearch(a,v,lo,hi):
     mid = (lo+hi)//2
     if mid<=lo:
