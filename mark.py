@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 
-import sys, re, random, pickle
+import sys, re, random, pickle, time
 
 tokens={}
 digest={}
@@ -27,10 +27,10 @@ if len(sys.argv)>2:
                 l = l[l.find(">")+2:].split()
                 if len(l) < ml: continue
                 numLines += 1
-                p=''
+                p=('','','')
                 for t in map(str.lower, filter(str.isalpha, l)):
                     occur(p,t)
-                    p=t
+                    p=(p[1],p[2],t)
                 occur(p,'')
     print('Processed %d lines' %numLines)
     for p in tokens:
@@ -70,10 +70,13 @@ def genToken(prevToken):
 
 def gen():
     result = ''
-    token = ''
+    token = ('','','')
     while 1:
-        token = genToken(token)
-        if '' == token: return result.rstrip()
-        result += token+' '
+        nextToken = genToken(token)
+        if '' == nextToken: return result.rstrip()
+        result += nextToken+' '
+        token=(token[1],token[2],nextToken)
 
-print(gen())
+while True:
+    print(gen())
+    time.sleep(random.randint(13,42))
