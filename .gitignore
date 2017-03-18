@@ -1,0 +1,7 @@
+*~
+mark
+*.o
+markdbdef.php
+logs
+*.mkd
+foo
