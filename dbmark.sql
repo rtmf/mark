@@ -1,10 +1,4 @@
-#!/usr/bin/python -i
-import sys
-import re
-import mysql.connector as m, random
-x=m.connect(user="mark",password="newpass4mark",database="mark")
-
-sql="""use mark;
+use mark;
 drop table if exists 3grams;
 drop table if exists 1grams;
 drop table if exists 3freq1;
@@ -31,7 +25,9 @@ create table 1grams (
 unique key `o` (`⇒`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 drop procedure if exists cook;
-drop procedure if exists msay;""".replace("\n"," ").split(";")+["""create procedure cook()
+drop procedure if exists msay;
+delimiter //
+create procedure cook()
 begin
 	declare `∫` integer default null;
 	declare `∑` integer default null;
@@ -57,7 +53,9 @@ begin
 		close `→`;
 	end loop;
 	close `⇒`;
-end""","""create procedure msay()
+end
+//
+create procedure msay()
 begin
 	declare `0`,`1`,`2`,`3`,`⇒`,`⇐`,`…` INTEGER DEFAULT NULL;
 	declare `%` FLOAT DEFAULT NULL;
@@ -85,37 +83,5 @@ begin
 	end loop;
 	select `¶`;
 end
-"""]
+//
 
-def add(p,t,wrd,tok):
-    if t not in wrd:
-        wrd+=[t]
-    if p not in tok:
-        tok[p]={}
-    if t not in tok[p]:
-        tok[p][t]=1
-    else:
-        tok[p][t]+=1
-
-def new(files,minlength=1,regex=r"^..:.. [^\s]*>"):
-    wrd=[]
-    tok={}
-    out={}
-    r=re.compile(regex)
-    c=x.cursor()
-    for s in sql:
-        c.execute(s)
-    numLines=0
-    for f in files:
-        for l in open(f,errors='ignore'):
-            if r.match(l):
-                l = l[l.find(">")+2:].split()
-                if len(l) < ml: continue
-                numLines += 1
-                p=('','','')
-                for t in map(str.lower, filter(str.isalpha, l)):
-                    add(p,t)
-                    p=(p[1],p[2],t)
-                add(p,'')
-    print('Processed %d lines' %numLines)
-new(sys.argv[1:])
